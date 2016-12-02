@@ -8,43 +8,43 @@ r.recvuntil(':')
 
 # 8-16
 r.recvuntil(': ')
-r.sendline('8')
+r.sendline('13')
 
 # 16-32
 r.recvuntil(': ')
-r.sendline('16')
+r.sendline('20')
 
 # 32-64
 r.recvuntil(': ')
-r.sendline('32')
+r.sendline('56')
 
 # 64-128
 r.recvuntil(': ')
-r.sendline('64')
+r.sendline('120')
 
 # 128-256
 r.recvuntil(': ')
-r.sendline('128')
+r.sendline('184')
 
 # 256-512
 r.recvuntil(': ')
-r.sendline('256')
+r.sendline('504')
 
 # 512-1024
 r.recvuntil(': ')
-r.sendline('512')
+r.sendline('1016')
 
 # 1024-2048
 r.recvuntil(': ')
-r.sendline('1024')
+r.sendline('2040')
 
 # 2048-4096
 r.recvuntil(': ')
-r.sendline('2048')
+r.sendline('4088')
 
 # 4096-8192
 r.recvuntil(': ')
 r.sendline('4096')
 
-while True:
-    r.recvline()
+flag = r.recvline_startswith('flag')
+print flag

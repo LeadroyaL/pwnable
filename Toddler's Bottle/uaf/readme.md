@@ -133,7 +133,7 @@ python -c "print '\x88\x15\x40\x00\x00\x00\x00\x00'+'\xaa'*90" > Homan
 
 文末讨论一下 new char[len]是写在什么地方的。
 
-1. fastbin最小的chunk是0x20个byte，其真正数据长度1<=len<=24；即new char[1]~new char[24]本质上是一样的
+1. fastbin最小的chunk是0x20个byte，其真正数据长度1<=len<=24；即new char[1]~new char[24]本质上是一样的。64位的最小0x20，32位的最小0x18
 2. 文中Woman、Man的chunk大小是0x20，故free掉时候多出2个0x20的空间
 3. 由于我们申请的是1~24，即0x20，所以会填入Woman和Man，顺序在于Man是先free掉的，Woman后free，故填充时优先填充Woman
 4. 多次申请0x18的时候，整个流程为

