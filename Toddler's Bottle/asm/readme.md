@@ -60,5 +60,7 @@ syscall(1,1,buf,1024);
 
 基本看一遍poc就懂了  `gcc -z execstack poc.c`
 
+最后ssh上去，在tmp下创建一个文件写入shellcode，用`nc 0 9026 < /tmp/xxx`即可
+
 flag
 `Mak1ng_shelLcodE_i5_veRy_eaSy`
