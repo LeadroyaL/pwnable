@@ -25,11 +25,11 @@ write(1,buf,1024);
 64位参考链接http://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/
 
 进行syscall的时候，`rax`表示编号，`%rdi	%rsi	%rdx	%r10	%r8	%r9`表示6个参数
-rax  | syscall   
---|--
-0 | read
-1 | write
-2 | open
+| rax  | syscall |
+|---|---|
+| 0 | read |
+| 1 | write |
+| 2 | open |
 
 
 将那段C改写一下（**注意，此处的syscall函数并不是syscall指令，而是被libc包转过的syscall**）
@@ -45,12 +45,14 @@ syscall(1,1,buf,1024);
 所以我们需要花时间写汇编，然后转成机器码、丢上去，而且是位置无关代码。
 
 主要思路：
+
 1. 文件名是很长的，需要用汇编手动一个一个输入，期间夹杂的技巧也就是一些循环，jmp之类的，需要把个数严格控制好（**很容易出错的地方**）
 2. 调用3次syscall，分别是open,read,write
 3. 后面崩了就崩了，别管就行
 
 
 主要坑点：
+
 1. AT&T指令和Intel指令的mov、cmp啥的都是不一样的
 2. 汇编有些指令的语法不容易写对
 3. 大小端不分

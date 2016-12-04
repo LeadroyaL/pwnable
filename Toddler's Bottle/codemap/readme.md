@@ -13,11 +13,11 @@ third eax: 99662, ebx: 30b47e8
 ```
 
 
-num | eax | ebx | string
---|---|--|--
-1 | 99879  | 0x02661DB0 | X12nM7yCJcu0x5u
-2 | 99679  | 0x019E1310 | roKBkoIZGMUKrMb
-3 | 99662  | 0x02A847E8 | 2ckbnDUabcsMA2s
+| num | eax | ebx | string |
+|--|---|--|--|
+| 1 | 99879  | 0x02661DB0 | X12nM7yCJcu0x5u |
+| 2 | 99679  | 0x019E1310 | roKBkoIZGMUKrMb |
+| 3 | 99662  | 0x02A847E8 | 2ckbnDUabcsMA2s |
 
 
 

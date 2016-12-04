@@ -96,7 +96,9 @@ x/20 $rax-16
 之后简单地改为 "3 2 2 1"即可拿到2次shell，分别是Man->introduce和Woman->introduce拿到的。当然，根据原理来看322222221也是可以的。
 
 之后，我们来测试一下`junk 0x30`如何被利用，原理上是用 0x21~0x28的数据写的时候会申请0x30的空间，刚好可以覆盖的样子。
-```x/40 $eax - 0x40
+
+```
+x/40 $eax - 0x40
 0x1c60000:      0x0000000000000000      0x0000000000000031
 0x1c60010:      0xaaaaaaaaaaaaaaaa      0xaaaaaaaaaaaaaaaa
 0x1c60020:      0xaaaaaaaaaaaaaaaa      0xaaaaaaaaaaaaaaaa

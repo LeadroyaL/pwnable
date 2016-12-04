@@ -69,6 +69,7 @@ get_shell在text段，显然不可以写入数据，此思路gg
 堆地址和栈地址均随机，好在这个题提供了这两个的位置。
 
 1. 调用unlink的过程中，栈基本是不变的
+
 		```
 		push ebp
 		mov ebp, esp
@@ -81,6 +82,7 @@ get_shell在text段，显然不可以写入数据，此思路gg
 
 2. 一开始的思路是，先控制unlink-ebp，返回到main里ebp还在，在下一个leave的时候，即可写掉rsp。但是经过[Himyth](https://github.com/Himyth)指点，这个是不可用的，因为下文直接把rsp写掉了。并且给出了下一种思路。
 3. 观察main函数，里面有一句push esp、pop esp类似的话，eip是从栈上拿的
+
 		```
 		mov ecx, esp
 		push ecx
